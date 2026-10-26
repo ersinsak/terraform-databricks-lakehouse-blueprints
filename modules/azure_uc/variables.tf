@@ -13,3 +13,8 @@ variable "location" {}
 variable "databricks_resource_id" {}
 
 variable "workspace_url" {}
+variable "metastore_id" {
+  type        = string
+  description = "(Optional) ID of an existing Unity Catalog metastore to reuse (e.g. the auto-provisioned regional one). If null, a new metastore is created."
+  default     = null
+}

@@ -46,5 +46,8 @@ module "unity_catalog" {
 
   resource_group_id       = azurerm_resource_group.this.id
   workspaces_to_associate = [module.spoke_databricks_workspace.databricks_workspace_id]
-
+  location                = var.location
+  databricks_resource_id  = module.spoke_databricks_workspace.workspace_id
+  workspace_url           = module.spoke_databricks_workspace.workspace_url
+  metastore_id            = var.existing_metastore_id
 }

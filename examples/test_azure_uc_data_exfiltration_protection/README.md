@@ -37,6 +37,7 @@ It uses the following variables in configurations:
 - `firewall_subnet_address_prefixes`: (Optional) The address prefixes for the Azure firewall subnet
 - `public_repos`: (Optional) List of public repository IP addresses to allow access to.
 - `tags`: (Optional) Map of tags to attach to resources
+- `existing_metastore_id`: (Optional) ID of an existing Unity Catalog metastore to reuse. New Azure Databricks accounts get one metastore per region automatically, and creating a second fails with "reached the limit for metastores in region". When set, the module skips metastore creation and instead registers its ADLS container as a UC storage credential + external location.
 
 ## Provider initialization
 

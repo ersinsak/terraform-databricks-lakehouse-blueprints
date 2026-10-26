@@ -78,3 +78,9 @@ variable "tags" {
   description = "(Optional) Map of tags to attach to resources"
   default     = {}
 }
+
+variable "existing_metastore_id" {
+  type        = string
+  description = "(Optional) Reuse an existing Unity Catalog metastore instead of creating one. Azure auto-provisions one per region for new accounts."
+  default     = null
+}

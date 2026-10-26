@@ -42,3 +42,6 @@ terraform.rc
 .idea
 ./.idea
 ./.idea/*
+# Terraform saved plan files (may contain sensitive values)
+tfplan
+*.tfplan

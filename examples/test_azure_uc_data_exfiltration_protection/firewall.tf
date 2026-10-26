@@ -20,7 +20,7 @@ resource "azurerm_public_ip" "this" {
 
 resource "azurerm_firewall_policy" "this" {
   name                = "databricks-fwpolicy"
-  resource_group_name = var.hub_resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
 }
 

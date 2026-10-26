@@ -76,6 +76,16 @@ resource "azurerm_role_assignment" "deployer_connector_contributor" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+# Azure RBAC is eventually consistent; Databricks validates these roles immediately
+resource "time_sleep" "rbac_propagation" {
+  create_duration = "120s"
+  depends_on = [
+    azurerm_role_assignment.unity_storage,
+    azurerm_role_assignment.unity_connector_reader,
+    azurerm_role_assignment.deployer_connector_contributor,
+  ]
+}
+
 resource "databricks_metastore" "this" {
   count = local.create_metastore ? 1 : 0
 
@@ -94,7 +104,7 @@ resource "databricks_metastore_data_access" "first" {
   }
 
   is_default = true
-  depends_on = [azurerm_role_assignment.unity_storage]
+  depends_on = [time_sleep.rbac_propagation]
 }
 
 resource "databricks_metastore_assignment" "this" {
@@ -114,11 +124,7 @@ resource "databricks_storage_credential" "this" {
     access_connector_id = azurerm_databricks_access_connector.unity.id
   }
   comment    = "Managed by Terraform (lakehouse blueprints)"
-  depends_on = [
-    azurerm_role_assignment.unity_storage,
-    azurerm_role_assignment.unity_connector_reader,
-    azurerm_role_assignment.deployer_connector_contributor,
-  ]
+  depends_on = [time_sleep.rbac_propagation]
 }
 
 resource "databricks_external_location" "this" {

@@ -44,3 +44,21 @@ terraform destroy   # when done
 - `allowed_node_types`: (Optional) VM sizes allowed by the cluster policy
 - `max_autotermination_minutes`: (Optional, default `60`) Policy upper bound
 - `tags`: (Optional) Resource tags
+
+## Compute governance (`governance.tf`)
+
+- `users` group: unrestricted cluster / instance-pool creation disabled (`databricks_entitlements`)
+- `users` group: `CAN_USE` on the `cost-guard` policy, so it is their only way to create compute
+- Workspace admins can still bypass policies
+
+One-time, account-wide (not in Terraform because `databricks_account_setting_v2` currently
+can't persist this setting in state): restrict the built-in **Personal Compute** policy to admins.
+Requires Databricks account admin:
+
+```bash
+ACCOUNT_ID=<databricks-account-id>
+TOKEN=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --query accessToken -o tsv)
+curl -X PATCH -H "Authorization: Bearer $TOKEN" \
+  "https://accounts.azuredatabricks.net/api/2.1/accounts/$ACCOUNT_ID/settings/dcp_acct_enable" \
+  -d '{"name":"dcp_acct_enable","personal_compute":{"value":"DELEGATE"}}'
+```
